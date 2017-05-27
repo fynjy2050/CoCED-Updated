@@ -46,15 +46,14 @@ namespace CoCEd.Model
         static readonly List<FlashDirectory> _directories = new List<FlashDirectory>();
 
         const int MaxBackupFiles = 10;
-
-        const int MaxSaveSlotsCoC = 9;
-        const int MaxSaveSlotsRevampMod = 14;
+        
+        const int MaxSaveSlots = 14;
         public const int SaveSlotsLowerBound = 1;
-        public const int SaveSlotsUpperBound = MaxSaveSlotsRevampMod; // must use largest value here
+        public const int SaveSlotsUpperBound = MaxSaveSlots; // must use largest value here
 
         public static int SaveSlotsUpperBoundByGame
         {
-            get { return VM.Instance.Game.IsRevampMod ? MaxSaveSlotsRevampMod : MaxSaveSlotsCoC; }
+            get { return MaxSaveSlots; }
         }
 
         public static FileEnumerationResult Result { get; private set; }

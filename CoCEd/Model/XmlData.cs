@@ -19,7 +19,7 @@ namespace CoCEd.Model
         public static class Files
         {
             public const string CoC = "CoCEd.Data.xml";
-            public const string RevampMod = "CoCEd.DataRevampMod.xml";
+            public const string RevampMod = "CoCEd.Data.xml"; //Admittedly this is a pretty lazy fix to the different file types, but eh.
             public static readonly IEnumerable<string> All = new string[] { CoC, RevampMod };
         }
 
@@ -49,24 +49,16 @@ namespace CoCEd.Model
                     var unknownItems = new XmlItemGroup { Name = "Unknown", Items = new List<XmlItem>(), Category = ItemCategories.Unknown };
                     fileData.ItemGroups.Add(unknownItems);
 
-                    _files.Add(xmlFile, fileData);
+                    if (!_files.ContainsKey(xmlFile))
+                        _files.Add(xmlFile, fileData);
                     if (_files.Count == 1) Select(xmlFile);
 
-                    // Sanity check: ensure the XML files have a certain level of completeness.
-                    switch (xmlFile)
-                    {
-                        case XmlData.Files.CoC:
-                            if (!fileData.Flags.Any(x => x.ID == 1279 && x.Name == "GAME_END")) return XmlLoadingResult.InvalidFile;
-                            break;
-
-                        case XmlData.Files.RevampMod:
-                            if (!fileData.Flags.Any(x => x.ID == 1279 && x.Name == "GAME_END")) return XmlLoadingResult.InvalidFile;
-                            if (fileData.Body.LowerBodyTypes.Any(x => x.ID == 24 && x.Name == "Deertaur")) return XmlLoadingResult.InvalidFile;
-                            if (!fileData.Body.LowerBodyTypes.Any(x => x.ID == 25 && x.Name == "Salamander")) return XmlLoadingResult.InvalidFile;
-                            if (!fileData.PerkGroups.Any(x => x.Name == "Tier 1" && x.Perks.Any(p => p.Name == "Iron Fists 3"))) return XmlLoadingResult.InvalidFile;
-                            if (!fileData.PerkGroups.Any(x => x.Name == "Events" && x.Perks.Any(p => p.Name == "Lustserker"))) return XmlLoadingResult.InvalidFile;
-                            break;
-                    }
+					if (!fileData.Flags.Any(x => x.ID == 2999 && x.Name == "GRIMDARK_MODE")) return XmlLoadingResult.InvalidFile;
+					if (fileData.Body.LowerBodyTypes.Any(x => x.ID == 4 && x.Name == "Centaur")) return XmlLoadingResult.InvalidFile;
+					if (fileData.Body.LowerBodyTypes.Any(x => x.ID == 24 && x.Name == "Deertaur")) return XmlLoadingResult.InvalidFile; if (!fileData.Body.LowerBodyTypes.Any(x => x.ID == 27 && x.Name == "Imp")) return XmlLoadingResult.InvalidFile;
+                    if (!fileData.Body.LowerBodyTypes.Any(x => x.ID == 27 && x.Name == "Imp")) return XmlLoadingResult.InvalidFile;
+					if (!fileData.PerkGroups.Any(x => x.Name == "Tier 1" && x.Perks.Any(p => p.Name == "Well Adjusted"))) return XmlLoadingResult.InvalidFile;
+					if (!fileData.PerkGroups.Any(x => x.Name == "Events" && x.Perks.Any(p => p.Name == "Whispered"))) return XmlLoadingResult.InvalidFile;
 
                     return XmlLoadingResult.Success;
                 }
@@ -129,6 +121,8 @@ namespace CoCEd.Model
         public String[] HairColors { get; set; }
         [XmlArray, XmlArrayItem("BeardType")]
         public XmlEnum[] BeardTypes { get; set; }
+        [XmlArray, XmlArrayItem("GillType")]
+        public XmlEnum[] GillTypes { get; set; }
 
         [XmlArray, XmlArrayItem("FaceType")]
         public XmlEnum[] FaceTypes { get; set; }
@@ -157,6 +151,8 @@ namespace CoCEd.Model
         public String[] WingDescriptions { get; set; }
         [XmlArray, XmlArrayItem("LowerBodyType")]
         public XmlEnum[] LowerBodyTypes { get; set; }
+        [XmlArray, XmlArrayItem("UnderbodyType")]
+        public XmlEnum[] UnderbodyTypes { get; set; }
         [XmlArray, XmlArrayItem("PiercingType")]
         public XmlEnum[] PiercingTypes { get; set; }
         [XmlArray, XmlArrayItem("PiercingMaterial")]
@@ -191,12 +187,11 @@ namespace CoCEd.Model
         Other = 1,
         Weapon = 2,
         Armor = 4,
-        ArmorCursed = 8,
         Shield = 16,
         Undergarment = 32,
         Jewelry = 64,
         Unknown = 128,
-        All = Other | Weapon | Armor | ArmorCursed | Shield | Undergarment | Jewelry | Unknown,
+        All = Other | Weapon | Armor | Shield | Undergarment | Jewelry | Unknown,
     }
 
     public sealed class XmlItemGroup

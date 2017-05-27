@@ -1,8 +1,8 @@
 # CoCEd #
 
-A save editor for the game *Corruption of Champions*.
+A save editor for the game *Corruption of Champions*, updated for the Revamp Mod.
 
-CoCEd allows you to edit your character's stats, appearance/body, perks, items, etc.
+CoCEd allows you to edit your character's stats, appearance/body, perks, items, and more.
 
 
 ## Requirements ##
@@ -16,19 +16,17 @@ Not currently compatible with Mac OS X and Linux (even if using Wine or Mono).
 
 **Windows XP Note:** Users of Windows XP *must* install, at least, the [Microsoft .NET Framework 4 Client Profile](http://www.microsoft.com/en-us/download/details.aspx?id=17113 "http://www.microsoft.com/en-us/download/details.aspx?id=17113"), if you have not already done so.
 
-[Download the latest `CoCEd-*.zip` archive](https://github.com/tmedwards/CoCEd/releases/latest "https://github.com/tmedwards/CoCEd/releases/latest") from the releases tab (above) and extract the files wherever you want.  No installation required.  Note that browsing the archive via Windows Explorer is not sufficient, the files *must* be extracted from the archive or you will receive errors.
+[Download the latest `CoCEd-*.zip` archive](https://github.com/Foxwells/CoCEd-RevampMod/releases/latest "https://github.com/Foxwells/CoCEd-RevampMod/releases/latest") from the releases tab (above) and extract the files wherever you want.  No installation required. Note that browsing the archive via Windows Explorer is not sufficient, the files *must* be extracted from the archive or you will receive errors.
 
 
-## Have A Question?  Found A Bug?  Want To Contribute? ##
+## Have A Question? Found A Bug? Want To Contribute? ##
 
-Please see [CoCEd's official forum thread at `fenoxo.com`](http://fenoxo.com/forum/index.php?/topic/57-coced-a-save-editor/ "http://fenoxo.com/forum/index.php?/topic/57-coced-a-save-editor/") for all questions, suggestions, and bug reports.
-
-Additionally, as a better way to report bugs, you may create/update issues in [CoCEd's issue tracker](https://github.com/tmedwards/CoCEd/issues "https://github.com/tmedwards/CoCEd/issues").
+Report it [here](https://github.com/Foxwells/CoCEd-RevampMod/issues "https://github.com/Foxwells/CoCEd-RevampMod/issues")!
 
 
 ## Contributors ##
 
 * Perdev2 (original creator)
-* TheMadExile/tmedwards (current maintainer)
+* TheMadExile/tmedwards (several updates)
 * Bobbaganoosh
-
+* Foxwells (current maintainer)

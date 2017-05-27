@@ -138,7 +138,7 @@
                 </ToggleButton.ContextMenu>
             </ToggleButton>
 
-            <Button x:Name="updateButton" Style="{StaticResource FlatButton}" Margin="5,-1,0,0" Content="Update?" ToolTip="Check for updates to CoCEd…" Click="checkForUpdates_Click"/>
+            <Button x:Name="updateButton" Style="{StaticResource FlatButton}" Margin="5,-1,0,0" Content="Update?" ToolTip="Check for updates." Click="checkForUpdates_Click"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -131,8 +131,7 @@ namespace CoCEd.Model
         {
             get
             {
-                int index;
-                if (IsIndex(key, out index))
+                if (IsIndex(key, out int index))
                 {
                     if (IsDenseIndex(index)) return _densePart[index];
                     else return _sparsePart.GetValueOrDefault(index);
@@ -151,8 +150,7 @@ namespace CoCEd.Model
                     return;
                 }
 
-                int index;
-                if (IsIndex(key, out index))
+                if (IsIndex(key, out int index))
                 {
                     if (IsDenseIndex(index)) _densePart[index] = value;
                     else if (index == _densePart.Count) Push(value);
@@ -168,8 +166,7 @@ namespace CoCEd.Model
 
         bool RemoveKey(object key)
         {
-            int index;
-            if (IsIndex(key, out index))
+            if (IsIndex(key, out int index))
             {
                 if (IsDenseIndex(index))
                 {
@@ -230,9 +227,8 @@ namespace CoCEd.Model
             if (value == null) return null;
             if (value is AmfNull) return null;
             if (value is string) return (string)value;
-            if (value is AmfObject)
+            if (value is AmfObject obj)
             {
-                var obj = (AmfObject)value;
                 if (obj.IsEnum) return obj.EnumValue.ToString();
             }
             return value.ToString();
@@ -257,8 +253,7 @@ namespace CoCEd.Model
 
         public bool Contains(Object key)
         {
-            int index;
-            if (IsIndex(key, out index))
+            if (IsIndex(key, out int index))
             {
                 if (IsDenseIndex(index)) return true;
                 else return _sparsePart.ContainsKey(index);
@@ -308,10 +303,9 @@ namespace CoCEd.Model
         void MergeSparsePartIntoDensePart()
         {
             // Before we had 0-4 and 6, we added 5, so we merge 6 and higher into the dense part
-            object nextDenseValue;
             int nextDenseKey = _densePart.Count;
 
-            while (_sparsePart.TryGetValue(nextDenseKey, out nextDenseValue))
+            while (_sparsePart.TryGetValue(nextDenseKey, out object nextDenseValue))
             {
                 _sparsePart.Remove(nextDenseKey);
                 _densePart.Add(nextDenseValue);

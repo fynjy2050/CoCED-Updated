@@ -16,14 +16,16 @@ namespace CoCEd.ViewModel
 
         protected override AmfObject CreateNewObject()
         {
-            var obj = new AmfObject(AmfTypes.Array);
-            obj["breasts"] = 2;
-            obj["nipplesPerBreast"] = 1;
-            obj["breastRating"] = 3.0;
-            obj["lactationMultiplier"] = 0.0;
-            obj["milkFullness"] = 0.0;
-            obj["fullness"] = 0.0;
-            obj["fuckable"] = false;
+            var obj = new AmfObject(AmfTypes.Array)
+            {
+                ["breasts"] = 2,
+                ["nipplesPerBreast"] = 1,
+                ["breastRating"] = 3.0,
+                ["lactationMultiplier"] = 0.0,
+                ["milkFullness"] = 0.0,
+                ["fullness"] = 0.0,
+                ["fuckable"] = false
+            };
             return obj;
         }
     }
@@ -52,7 +54,7 @@ namespace CoCEd.ViewModel
 
         public int MaxRating
         {
-            get { return _game.IsRevampMod ? 199 : 99; }
+            get { return 199; }
         }
 
         public int BreastCount
@@ -95,13 +97,10 @@ namespace CoCEd.ViewModel
                 double endurance = _game.GetStatus("Lactation Endurance").IsOwned ? _game.GetStatus("Lactation Endurance").Value1 : 1.0;
                 double reduction = _game.GetStatus("Lactation Reduction").IsOwned ? _game.GetStatus("Lactation Reduction").Value1 : 0.0;
                 double qty = Rating * 10 * LactationMultiplier * endurance * BreastCount;
-                if (_game.IsRevampMod)
-                {
-                    var milkMaid = _game.GetPerk("Milk Maid");
-                    if (milkMaid.IsOwned) qty += 200 + milkMaid.Value1 * 100;
-                }
+				var milkMaid = _game.GetPerk("Milk Maid");
+				if (milkMaid.IsOwned) qty += 200 + milkMaid.Value1 * 100;
                 if (reduction >= 48) qty *= 1.5;
-                if (_game.IsRevampMod && qty > Int32.MaxValue) qty = Int32.MaxValue;
+                if (qty > Int32.MaxValue) qty = Int32.MaxValue;
                 //return GameVM.FormatVolume(qty, "/h (base)");
                 return GameVM.FormatVolume(qty);
             }
@@ -131,7 +130,7 @@ namespace CoCEd.ViewModel
         {
             get
             {
-                if (_game.IsRevampMod && Rating > 99) return RatingDescriptionLong.Replace("hyper", "hyp").Replace("large", "lg");
+                if (Rating > 99) return RatingDescriptionLong.Replace("hyper", "hyp").Replace("large", "lg");
                 else return RatingDescriptionLong;
             }
         }
@@ -144,7 +143,7 @@ namespace CoCEd.ViewModel
                 var prefix = "";
 
                 // Handle CoC-Revamp-Mod "hyper" ratings
-                if (_game.IsRevampMod && rating > 99)
+                if (rating > 99)
                 {
                     rating -= 99;
                     prefix = "hyper ";
@@ -252,7 +251,7 @@ namespace CoCEd.ViewModel
                     case 97: return prefix + "large ZZ-cup";
                     case 98: return prefix + "ZZZ-cup";
                     case 99: return prefix + "large ZZZ-cup";
-                    default: return (_game.IsRevampMod && rating == 100) ? "jacques00-cup" : "game-breaking";
+                    default: return (rating == 100) ? "jacques00-cup" : "game-breaking";
                 }
             }
         }

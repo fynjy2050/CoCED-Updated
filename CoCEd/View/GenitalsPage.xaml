@@ -61,7 +61,7 @@
                     <common:MyNumericBox    Value="{Binding Game.HoursSinceCum}" Unit="Hours" Tip="{Binding Game.CumVolume}"/>
 
                     <Border/>
-                    <CheckBox Content="Uniball&#x202F;*" ToolTip="Sand trap ball sack.  Will be removed by CoC if your balls are bigger than 1 inch." IsChecked="{Binding Game.HasSandTrapBalls}" Margin="8,5,0,0"/>
+                    <CheckBox Content="Uniball&#x202F;*" ToolTip="Sand trap and raccooon ballsack. Will be removed by CoC if your balls are bigger than 1 inch." IsChecked="{Binding Game.HasSandTrapBalls}" Margin="8,5,0,0"/>
                 </common:AutoGrid>
             </StackPanel>
 
@@ -104,7 +104,7 @@
                 </Border>
 
                 <common:AutoGrid>
-                    <TextBlock              Text="Loosness"/>
+                    <TextBlock              Text="Looseness"/>
                     <common:MyComboBox      SelectedValue="{Binding Game.Ass.Looseness}" ItemsSource="{Binding Data.Body.AnalLoosenessLevels}"/>
 
                     <TextBlock              Text="Wetness"/>
@@ -123,10 +123,7 @@
                         </DataTemplate>
                     </common:ArrayEditor.ItemTemplate>
                     <common:AutoGrid>
-                        <TextBlock              Text="Type"/>
-                        <common:MyComboBox      SelectedValue="{Binding Type}" ItemsSource="{Binding AllTypes}"/>
-
-                        <TextBlock              Text="Loosness"/>
+                        <TextBlock              Text="Looseness"/>
                         <common:MyComboBox      SelectedValue="{Binding Looseness}" ItemsSource="{Binding AllLoosenessLevels}"/>
 
                         <TextBlock              Text="Wetness"/>

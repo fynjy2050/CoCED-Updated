@@ -42,7 +42,7 @@
                                                 BorderBrush="{StaticResource NumericBorderBrush}" Height="22" VerticalContentAlignment="Center" Padding="3,0"/>
 
                     <TextBlock              Text="Gems"/>
-                    <common:MyNumericBox    Value="{Binding Game.Gems}" Upper="10000" UpperLabel="10k"/>
+                    <common:MyNumericBox    Value="{Binding Game.Gems}" Upper="99999" UpperLabel="99k"/>
 
                     <TextBlock              Text="Days"/>
                     <common:MyNumericBox    Value="{Binding Game.Days}" Unit="days"/>
@@ -88,7 +88,7 @@
                     <TextBlock              Text="Fatigue"/>
                     <common:MyNumericBox    Value="{Binding Game.Fatigue}" Upper="{Binding Game.MaxFatigue}"/>
                 </common:AutoGrid>
-                <common:AutoGrid Margin="0,30,0,0" IsEnabled="{Binding Game.IsRevampMod}" Visibility="{Binding Game.RevampModVisibility, FallbackValue={x:Static Visibility.Collapsed}}">
+                <common:AutoGrid Margin="0,30,0,0">
                     <TextBlock              Text="Hunger"/>
                     <common:MyNumericBox    Value="{Binding Game.Hunger}" Min="0" Max="100" Upper="100" Tip="{Binding Game.HungerTip}"/>
                 </common:AutoGrid>
@@ -127,15 +127,13 @@
 
                     <TextBlock              Text="Hair type"/>
                     <common:MyComboBox      SelectedValue="{Binding Game.HairType}" ItemsSource="{Binding Data.Body.HairTypes}"/>
-                </common:AutoGrid>
-                <common:AutoGrid IsEnabled="{Binding Game.IsRevampMod}" Visibility="{Binding Game.RevampModVisibility, FallbackValue={x:Static Visibility.Collapsed}}">
+					
                     <TextBlock              Text="Beard length&#x202F;*" ToolTip="Enable with any value greater than 0."/>
                     <common:MyNumericBox    Value="{Binding Game.BeardLength}" Type="Double" Unit="inches"/>
 
                     <TextBlock              Text="Beard style"/>
                     <common:MyComboBox      SelectedValue="{Binding Game.BeardType}" ItemsSource="{Binding Data.Body.BeardTypes}"/>
-                </common:AutoGrid>
-                <common:AutoGrid>
+					
                     <TextBlock              Text="Face"/>
                     <common:MyComboBox      SelectedValue="{Binding Game.FaceType}" ItemsSource="{Binding Data.Body.FaceTypes}"/>
 

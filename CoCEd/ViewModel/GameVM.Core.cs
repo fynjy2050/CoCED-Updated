@@ -70,12 +70,9 @@ namespace CoCEd.ViewModel
         public void OnPerkChanged(string name)
         {
             // These must be here, rather than in OnPerkAddedOrRemoved(), to catch property value changes.
-            if (IsRevampMod)
-            {
-                if (name == "Milk Maid")
-                {
-                    foreach (var breast in Breasts) breast.UpdateMilkVolume();
-                }
+            if (name == "Milk Maid")
+			{
+				foreach (var breast in Breasts) breast.UpdateMilkVolume();
             }
 
             foreach (var prop in _allPerks.First(x => x.Name == name).GameVMProperties) OnPropertyChanged(prop);
@@ -83,13 +80,10 @@ namespace CoCEd.ViewModel
 
         public void OnFlagChanged(int index)
         {
-            if (IsRevampMod)
-            {
-                if (index == 2008) // CAMP_CABIN_FURNITURE_DRESSER
-                {
-                    UpdateDresser();
-                    ItemContainers.Update();
-                }
+			if (index == 2008) // CAMP_CABIN_FURNITURE_DRESSER
+			{
+				UpdateDresser();
+				ItemContainers.Update();
             }
 
             foreach (var prop in _allFlags[index].GameVMProperties) OnPropertyChanged(prop);
@@ -103,25 +97,22 @@ namespace CoCEd.ViewModel
         public void OnKeyItemChanged(string name)
         {
             // These must be here, rather than in OnKeyItemAddedOrRemoved(), to catch property value changes.
-            if (IsRevampMod)
-            {
-                if (name == "Backpack") // itemSlot# [6, 10]
-                {
-                    var backpack = _allKeyitems.First(x => x.Name == name);
-                    for (int i = 0; i < 5; i++) GetObj("itemSlot" + (i + 6))["unlocked"] = false;
-                    if (backpack.IsOwned)
-                    {
-                        int count = backpack.GetInt("value1");
-                        if (count < 1 || count > 5)
-                        {
-                            count = Math.Max(1, Math.Min(5, count)); // clamp value to [1, 5], so CoC-Revamp-Mod doesn't assplode
-                            backpack.Value1 = count;
-                        }
-                        for (int i = 0; i < count; i++) GetObj("itemSlot" + (i + 6))["unlocked"] = true;
-                    }
-                    UpdateInventory();
-                    ItemContainers.Update();
-                }
+			if (name == "Backpack") // itemSlot# [6, 10]
+			{
+				var backpack = _allKeyitems.First(x => x.Name == name);
+				for (int i = 0; i < 5; i++) GetObj("itemSlot" + (i + 6))["unlocked"] = false;
+				if (backpack.IsOwned)
+				{
+					int count = backpack.GetInt("value1");
+					if (count < 1 || count > 5)
+					{
+						count = Math.Max(1, Math.Min(5, count)); // clamp value to [1, 5], so we don't assplode
+						backpack.Value1 = count;
+					}
+					for (int i = 0; i < count; i++) GetObj("itemSlot" + (i + 6))["unlocked"] = true;
+				}
+				UpdateInventory();
+				ItemContainers.Update();
             }
 
             foreach (var prop in _allKeyitems.First(x => x.Name == name).GameVMProperties) OnPropertyChanged(prop);
@@ -142,15 +133,12 @@ namespace CoCEd.ViewModel
                     break;
 
                 case "Rapier Training":
-                    if (IsRevampMod)
-                    {
-                        FlagVM rapierTraining = _allFlags[137]; // RAPHAEL_RAPIER_TRANING
-                        if (isOwned)
-                        {
-                            if (rapierTraining.AsInt() < 4) rapierTraining.SetValue(4);
-                        }
-                        else rapierTraining.SetValue(0);
-                    }
+					FlagVM rapierTraining = _allFlags[137]; // RAPHAEL_RAPIER_TRANING
+					if (isOwned)
+					{
+						if (rapierTraining.AsInt() < 4) rapierTraining.SetValue(4);
+					}
+					else rapierTraining.SetValue(0);
                     break;
 
                 case "Strong Back":
@@ -175,28 +163,27 @@ namespace CoCEd.ViewModel
                 case "Camp - Chest":
                 case "Camp - Murky Chest":
                 case "Camp - Ornate Chest":
-                    if (IsRevampMod || name == "Camp - Chest")
-                    {
-                        var array = GetObj("itemStorage"); // max chest slots are 6 in CoC and 14 in CoC-Revamp-Mod
-                        int count = name == "Camp - Chest" ? 6 : 4; // the CoC-Revamp-Mod addon chests add 4 slots a piece
-                        if (isOwned)
-                        {
-                            for (int i = 0; i < count; i++)
+				var array = GetObj("itemStorage"); // max chest slots are 14
+				int count = name == "Camp - Chest" ? 6 : 4; // the addon chests add 4 slots a piece
+				if (isOwned)
+				{
+					for (int i = 0; i < count; i++)
+					{
+                            var slot = new AmfObject(AmfTypes.Object)
                             {
-                                var slot = new AmfObject(AmfTypes.Object);
-                                slot["id"] = "NOTHING!";  // having to set this to "NOTHING!" is daft
-                                slot["quantity"] = 0;
-                                slot["unlocked"] = false; // must now be false or the camp chest will break in-game
-                                array.Push(slot);
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < count; i++) array.Pop(array.DenseCount - 1);
-                        }
-                        UpdateChest();
-                        ItemContainers.Update();
-                    }
+                                ["id"] = "NOTHING!",  // having to set this to "NOTHING!" is daft
+                                ["quantity"] = 0,
+                                ["unlocked"] = false // must now be false or the camp chest will break in-game
+                            };
+                            array.Push(slot);
+					}
+				}
+				else
+				{
+					for (int i = 0; i < count; i++) array.Pop(array.DenseCount - 1);
+				}
+				UpdateChest();
+				ItemContainers.Update();
                     break;
 
                 case "Equipment Rack - Weapons":
@@ -226,7 +213,7 @@ namespace CoCEd.ViewModel
         void UpdateInventory()
         {
             _inventory.Clear();
-            int count = IsRevampMod ? 10 : 5; // max inventory slots are 5 in CoC and 10 in CoC-Revamp-Mod
+            int count = 10;
             for (int i = 0; i < count; i++)
             {
                 var slot = GetObj("itemSlot" + (i + 1));
@@ -243,7 +230,7 @@ namespace CoCEd.ViewModel
         void UpdateWeaponRack() // gearStorage [0, 8]
         {
             _weaponRack.Clear();
-            bool hasWeaponRack = IsRevampMod ? GetKeyItem("Equipment Rack - Weapons").IsOwned : GetFlag(254).AsInt() == 1;
+            bool hasWeaponRack = GetKeyItem("Equipment Rack - Weapons").IsOwned;
             if (hasWeaponRack)
             {
                 var gearStorage = GetObj("gearStorage");
@@ -254,7 +241,7 @@ namespace CoCEd.ViewModel
         void UpdateArmorRack() // gearStorage [9, 17]
         {
             _armorRack.Clear();
-            bool hasArmorRack = IsRevampMod ? GetKeyItem("Equipment Rack - Armor").IsOwned : GetFlag(255).AsInt() == 1;
+            bool hasArmorRack = GetKeyItem("Equipment Rack - Armor").IsOwned;
             if (hasArmorRack)
             {
                 var gearStorage = GetObj("gearStorage");

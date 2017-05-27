@@ -37,15 +37,13 @@
             </Grid.RowDefinitions>
             <TextBlock Text="Reporting the error" FontWeight="Bold"/>
             <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,5,0,0" Grid.Row="1">
-                Please report this error by copying it and either posting a message in
-                <Hyperlink NavigateUri="http://fenoxo.com/forum/index.php?/topic/57-coced-a-save-editor/" RequestNavigate="requestNavigate">CoCEd's forum thread</Hyperlink>,
-                at fenoxo.com, or opening a ticket in
-                <Hyperlink NavigateUri="https://github.com/tmedwards/CoCEd/issues" RequestNavigate="requestNavigate">CoCEd's issue tracker</Hyperlink>.
+                Please report this error by copying it by opening a ticket in
+                <Hyperlink NavigateUri="https://github.com/Foxwells/CoCED-RevampMod/issues" RequestNavigate="requestNavigate">CoCED Revamp Mod's issue tracker</Hyperlink>.
                 (Error also saved to the CoCEd.log file.)
                 <LineBreak/><LineBreak/>
                 Providing the save file which caused the error could also be helpful.
                 <LineBreak/><LineBreak/>
-                Please <TextBlock FontStyle="Italic">do not</TextBlock> sumbit reports to CoC's issue tracker, as the projects are separate.
+                Please <TextBlock FontStyle="Italic">do not</TextBlock> sumbit reports to CoC's or Coc Revamp Mod's issue tracker, as the projects are separate.
             </TextBlock>
         </Grid>
 
@@ -84,7 +82,7 @@
                 <TextBlock Text="Links:" FontWeight="Bold"/>
                 <Hyperlink NavigateUri="http://fenoxo.com/forum/index.php?/topic/57-coced-a-save-editor/" RequestNavigate="requestNavigate">CoCEd's forum thread</Hyperlink>
                 &amp;
-                <Hyperlink NavigateUri="https://github.com/tmedwards/CoCEd/issues" RequestNavigate="requestNavigate">CoCEd's issue tracker</Hyperlink>
+                <Hyperlink NavigateUri="https://github.com/Foxwells/CoCED-RevampMod/issues" RequestNavigate="requestNavigate">CoCEd's issue tracker</Hyperlink>
             </TextBlock>
 
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" x:Name="buttonStack"/>

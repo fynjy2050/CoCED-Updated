@@ -64,10 +64,10 @@
                 </common:AutoGrid>
 
                 <common:AutoGrid Margin="0,30,0,0">
-                    <TextBlock              Text="Addiction: minotaur cum"/>
+                    <TextBlock              Text="Addiction: Minotaur Cum"/>
                     <common:MyNumericBox    Value="{Binding Game.MinotaurCumAddiction}" Unit="%" Upper="120"/>
 
-                    <TextBlock              Text="Addiction: Marble's milk&#x202F;*" ToolTip="Affected by perks: 0% if Marble Resistant, 100% if Marble's Milk." IsEnabled="{Binding Game.HasMetMarble}"/>
+                    <TextBlock              Text="Addiction: Marble's Milk&#x202F;*" ToolTip="Affected by perks: 0% if Marble Resistant, 100% if Marble's Milk." IsEnabled="{Binding Game.HasMetMarble}"/>
                     <common:MyNumericBox    Value="{Binding Game.MarbleMilkAddiction}" Unit="%" Upper="120" IsEnabled="{Binding Game.HasMetMarble}"/>
 
                     <TextBlock              Text="Kelt submissiveness" IsEnabled="{Binding Game.HasMetKelt}"/>
@@ -99,16 +99,16 @@
                 </common:AutoGrid>
 
                 <common:AutoGrid Margin="0,30,0,0">
-                    <TextBlock              Text="Pregnancy&#x202F;*" ToolTip="A &#x25CA; denotes special pregnancies.  Do not set these manually."/>
+                    <TextBlock              Text="Pregnancy&#x202F;*" ToolTip="A &#x25CA; denotes special pregnancies. Do not set these manually."/>
                     <common:MyComboBox      SelectedValue="{Binding Game.PregnancyType}" ItemsSource="{Binding Data.Body.PregnancyTypes}"/>
 
-                    <TextBlock              Text="Remaining&#x202F;*" IsEnabled="{Binding Game.IsPregnancyEnabled}" ToolTip="A virgin vagina will put pregnancy on hold. With the diapause perk it will only progress when you absorb fluids."/>
+                    <TextBlock              Text="Remaining&#x202F;*" IsEnabled="{Binding Game.IsPregnancyEnabled}" ToolTip="A virgin vagina will put pregnancy on hold. With the diapause perk, it will only progress when you absorb fluids."/>
                     <common:MyNumericBox    Value="{Binding Game.PregnancyTime}" Unit="hours" IsEnabled="{Binding Game.IsPregnancyEnabled}"/>
 
-                    <TextBlock              Text="Butt pregnancy&#x202F;*" ToolTip="A &#x25CA; denotes special pregnancies.  Do not set these manually."/>
+                    <TextBlock              Text="Butt pregnancy&#x202F;*" ToolTip="A &#x25CA; denotes special pregnancies. Do not set these manually."/>
                     <common:MyComboBox      SelectedValue="{Binding Game.ButtPregnancyType}" ItemsSource="{Binding Data.Body.AnalPregnancyTypes}"/>
 
-                    <TextBlock              Text="Remaining&#x202F;*" IsEnabled="{Binding Game.IsButtPregnancyEnabled}" ToolTip="With the diapause perk it will only progress when you absorb fluids."/>
+                    <TextBlock              Text="Remaining&#x202F;*" IsEnabled="{Binding Game.IsButtPregnancyEnabled}" ToolTip="With the diapause perk, it will only progress when you absorb fluids."/>
                     <common:MyNumericBox    Value="{Binding Game.ButtPregnancyTime}" Unit="hours" IsEnabled="{Binding Game.IsButtPregnancyEnabled}"/>
                 </common:AutoGrid>
 

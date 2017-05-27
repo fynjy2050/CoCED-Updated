@@ -88,8 +88,8 @@ namespace CoCEd.ViewModel
 
         public bool IsKnotEnabled
         {
-            // Dog, Coeurl, Fox
-            get { return (Type == 2 || Type == 10 || Type == 11); }
+            // Dog, Dragon, Coeurl, Fox, Wolf
+            get { return (Type == 2 || Type == 9 || Type == 10 || Type == 11 || Type == 17); }
         }
 
         public string CockSock
@@ -98,14 +98,11 @@ namespace CoCEd.ViewModel
             set
             {
                 bool greenSockChanged = false;
-                if (_game.IsRevampMod)
-                {
-                    if (CockSock == "green")
-                    {
-                        if (value != "green") greenSockChanged = true;
-                    }
-                    else if (value == "green") greenSockChanged = true;
-                }
+				if (CockSock == "green")
+				{
+					if (value != "green") greenSockChanged = true;
+				}
+				else if (value == "green") greenSockChanged = true;
                 SetValue("sock", value);
                 if (greenSockChanged) _game.NotifyPropertyChanged("MaxHP");
             }

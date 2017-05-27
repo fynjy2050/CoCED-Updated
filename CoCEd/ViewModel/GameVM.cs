@@ -14,17 +14,7 @@ namespace CoCEd.ViewModel
 {
     // TeaseLevel / XP
     public sealed partial class GameVM : ObjectVM
-    {
-        public bool IsCoC { get { return !IsRevampMod; } }
-        public bool IsRevampMod { get; private set; }
-        public Visibility CoCVisibility
-        {
-            get { return IsCoC ? Visibility.Visible : Visibility.Collapsed; }
-        }
-        public Visibility RevampModVisibility
-        {
-            get { return IsRevampMod ? Visibility.Visible : Visibility.Collapsed; }
-        }
+	{
 
         readonly FlagVM[] _allFlags;
         readonly StatusVM[] _allStatuses;
@@ -39,7 +29,7 @@ namespace CoCEd.ViewModel
         ItemContainerVM _shieldRack;
         ItemContainerVM _inventory;
 
-        public GameVM(AmfFile file, GameVM previousVM, bool isRevampMod = false)
+        public GameVM(AmfFile file, GameVM previousVM)
             : base(file)
         {
             if (previousVM != null)
@@ -49,11 +39,6 @@ namespace CoCEd.ViewModel
                 _rawDataSearchText = previousVM._rawDataSearchText;
                 _keyItemSearchText = previousVM._keyItemSearchText;
             }
-
-
-            // Is this save from vanilla CoC or the CoC-Revamp-Mod?
-            IsRevampMod = isRevampMod;
-
 
             // Unique children
             Ass = new AssVM(file.GetObj("ass"));
@@ -130,7 +115,7 @@ namespace CoCEd.ViewModel
             containers.Add(_inventory);
             UpdateInventory();
 
-            _chest = new ItemContainerVM(this, IsRevampMod ? "Chest(s)" : "Chest", ItemCategories.All);
+            _chest = new ItemContainerVM(this, "Chest(s)", ItemCategories.All);
             containers.Add(_chest);
             UpdateChest();
 
@@ -138,24 +123,21 @@ namespace CoCEd.ViewModel
             containers.Add(_weaponRack);
             UpdateWeaponRack();
 
-            _armorRack = new ItemContainerVM(this, "Armor rack", ItemCategories.Armor | ItemCategories.ArmorCursed | ItemCategories.Unknown);
+            _armorRack = new ItemContainerVM(this, "Armor rack", ItemCategories.Armor | ItemCategories.Unknown);
             containers.Add(_armorRack);
             UpdateArmorRack();
 
-            if (IsRevampMod)
-            {
-                _shieldRack = new ItemContainerVM(this, "Shield rack", ItemCategories.Shield | ItemCategories.Unknown);
-                containers.Add(_shieldRack);
-                UpdateShieldRack();
+            _shieldRack = new ItemContainerVM(this, "Shield rack", ItemCategories.Shield | ItemCategories.Unknown);
+			containers.Add(_shieldRack);
+			UpdateShieldRack();
 
-                _dresser = new ItemContainerVM(this, "Dresser", ItemCategories.Undergarment | ItemCategories.Unknown);
-                containers.Add(_dresser);
-                UpdateDresser();
+			_dresser = new ItemContainerVM(this, "Dresser", ItemCategories.Undergarment | ItemCategories.Unknown);
+			containers.Add(_dresser);
+			UpdateDresser();
 
-                _jewelryBox = new ItemContainerVM(this, "Jewelry box", ItemCategories.Jewelry | ItemCategories.Unknown);
-                containers.Add(_jewelryBox);
-                UpdateJewelryBox();
-            }
+			_jewelryBox = new ItemContainerVM(this, "Jewelry box", ItemCategories.Jewelry | ItemCategories.Unknown);
+			containers.Add(_jewelryBox);
+			UpdateJewelryBox();
 
             // Import missing items
             var unknownItemGroup = XmlData.Current.ItemGroups.Last();
@@ -311,22 +293,18 @@ namespace CoCEd.ViewModel
                 if (GetPerk("Tank").IsOwned) max += 50;
                 if (GetPerk("Tank 2").IsOwned) max += (int)Math.Round(tou);
                 if (GetPerk("Chi Reflow - Defense").IsOwned) max += 50; // value: classes\classes\Scenes\Places\TelAdre\UmasShop.as:NEEDLEWORK_DEFENSE_EXTRA_HP
-                if (IsRevampMod) max += Level * 15;
-                else max += Math.Min(20, Level) * 15;
+                max += Level * 15;
 
-                if (IsRevampMod)
-                {
-                    //if (jewelryEffectId == JewelryLib.MODIFIER_HP) max += jewelryEffectMagnitude; // value: classes\classes\Items\JewelryLib.as
-                    //if (GetItem(GetString("jewelryId")).EffectId == 5) max += GetItem(GetString("jewelryId")).EffectMagnitude; // value: classes\classes\Items\JewelryLib.as
-                    if (GetString("jewelryId") == "LifeRng") max += 25; // value: classes\classes\Items\JewelryLib.as
+				if (GetString("jewelryId") == "LifeRng") max += 25; // value: classes\classes\Items\JewelryLib.as
+                if (GetString("jewelryId") == "LifeRn2") max += 45; // value: classes\classes\Items\JewelryLib.as
+                if (GetString("jewelryId") == "LifeRn3") max += 60; // value: classes\classes\Items\JewelryLib.as
 
-                    //max *= 1 + (countCockSocks("green") * 0.02);
-                    max *= 1 + 0.02 * Cocks.Count(x => x.CockSock == "green");
-                }
+                //max *= 1 + (countCockSocks("green") * 0.02);
+                max *= 1 + 0.02 * Cocks.Count(x => x.CockSock == "green");
 
                 max = (int)Math.Round(max);
 
-                return Math.Min(IsRevampMod ? 9999 : 999, (int)max);
+                return Math.Min(9999, (int)max);
             }
         }
 
@@ -347,15 +325,12 @@ namespace CoCEd.ViewModel
             {
                 double max = 100;
 
-                if (IsRevampMod)
-                {
-                    if (GetPerk("Improved Self-Control").IsOwned) max += 20;
-                    if (GetPerk("Bro Body").IsOwned || GetPerk("Bimbo Body").IsOwned || GetPerk("Futa Form").IsOwned) max += 20;
-                    if (GetPerk("Omnibus' Gift").IsOwned) max += 15;
+				if (GetPerk("Improved Self-Control").IsOwned) max += 20;
+				if (GetPerk("Bro Body").IsOwned || GetPerk("Bimbo Body").IsOwned || GetPerk("Futa Form").IsOwned) max += 20;
+				if (GetPerk("Omnibus' Gift").IsOwned) max += 15;
 
-                    var ascensionDesires = GetPerk("Ascension: Desires");
-                    if (ascensionDesires.IsOwned) max += ascensionDesires.Value1 * 5;
-                }
+				var ascensionDesires = GetPerk("Ascension: Desires");
+				if (ascensionDesires.IsOwned) max += ascensionDesires.Value1 * 5;
 
                 return Math.Min(999, (int)max);
             }
@@ -372,14 +347,11 @@ namespace CoCEd.ViewModel
             get
             {
                 double max = 100;
+				
+				if (GetPerk("Improved Endurance").IsOwned) max += 20;
 
-                if (IsRevampMod)
-                {
-                    if (GetPerk("Improved Endurance").IsOwned) max += 20;
-
-                    var ascensionEndurance = GetPerk("Ascension: Endurance");
-                    if (ascensionEndurance.IsOwned) max += ascensionEndurance.Value1 * 5;
-                }
+				var ascensionEndurance = GetPerk("Ascension: Endurance");
+				if (ascensionEndurance.IsOwned) max += ascensionEndurance.Value1 * 5;
 
                 return Math.Min(999, (int)max);
             }
@@ -495,8 +467,8 @@ namespace CoCEd.ViewModel
         {
             get
             {
-                if (HornType == 5) return "Antlers' branches";
-                if (HornType == 1) return "Horn count";
+                if (HornType == 5) return "Branches";
+                if (HornType == 1) return "Count";
                 return "Horns' length"; // 2
             }
         }
@@ -676,6 +648,21 @@ namespace CoCEd.ViewModel
             set { SetValue("armType", value); }
         }
 
+        public int UnderbodyType
+        {
+            get {
+                if (GetValue("underbodyType") == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return GetInt("underbodyType");
+                }
+            }
+            set { SetValue("underbodyType", value); }
+        }
+
         public int LowerBodyType
         {
             get { return GetInt("lowerBody"); }
@@ -683,32 +670,29 @@ namespace CoCEd.ViewModel
             {
                 SetValue("lowerBody", value);
 
-                if (IsRevampMod)
-                {
-                    // Set the default `LegCount` value when the lower body type is changed.
-                    switch (value)
-                    {
-                        case 3: // Naga
-                        case 8: // Goo
-                            LegCount = 1;
-                            break;
+				// Set the default `LegCount` value when the lower body type is changed.
+				switch (value)
+				{
+					case 3: // Naga
+					case 8: // Goo
+						LegCount = 1;
+						break;
 
-                        case 11: // Pony
-                            LegCount = 4;
-                            break;
+					case 11: // Pony
+						LegCount = 4;
+						break;
 
-                        case 16: // Drider
-                            LegCount = 8;
-                            break;
+					case 16: // Drider
+						LegCount = 8;
+						break;
 
-                        default:
-                            LegCount = 2;
-                            break;
-                    }
-                    OnPropertyChanged("LegCount");
-                    OnPropertyChanged("LegConfigs");
-                    OnPropertyChanged("HasLegConfigs");
-                }
+					default:
+						LegCount = 2;
+						break;
+				}
+				OnPropertyChanged("LegCount");
+				OnPropertyChanged("LegConfigs");
+				OnPropertyChanged("HasLegConfigs");
             }
         }
 
@@ -772,10 +756,10 @@ namespace CoCEd.ViewModel
             get { return WingType != 0; }
         }
 
-        public bool HasGills
+        public int GillType
         {
-            get { return GetBool("gills"); }
-            set { SetValue("gills", value); }
+            get { return GetInt("gillType"); }
+            set { SetValue("gillType", value); }
         }
 
         public bool HasSandTrapBalls
@@ -941,7 +925,7 @@ namespace CoCEd.ViewModel
 
                 if (GetPerk("Bro Body").IsOwned) qty *= 1.3;
                 if (GetPerk("Fertility+").IsOwned) qty *= 1.5;
-                if (IsRevampMod && GetPerk("Fertility-").IsOwned && Libido < 25) qty *= 0.7;
+                if (GetPerk("Fertility-").IsOwned && Libido < 25) qty *= 0.7;
                 if (GetPerk("Messy Orgasms").IsOwned) qty *= 1.5;
                 if (GetPerk("One Track Mind").IsOwned) qty *= 1.1;
 
@@ -954,13 +938,12 @@ namespace CoCEd.ViewModel
                 qty += GetStatus("rut").Value1;
 
                 qty *= 1 + (2 * GetPerk("Pierced: Fertite").Value1) / 100;
-                //if (IsRevampMod && jewelryEffectId == JewelryLib.MODIFIER_FERTILITY) qty *= 1 + jewelryEffectMagnitude / 100;
-                //if (GetItem(GetString("jewelryId")).EffectId == 2) qty *= 1 + GetItem(GetString("jewelryId")).EffectMagnitude / 100; // value: classes\classes\Items\JewelryLib.as
-                //if (GetString("jewelryId") == "FertRng") qty *= 1 + 20 / 100; // value: classes\classes\Items\JewelryLib.as
                 if (GetString("jewelryId") == "FertRng") qty *= 1.2; // value: classes\classes\Items\JewelryLib.as
+                if (GetString("jewelryId") == "FertRn2") qty *= 1.3; // value: classes\classes\Items\JewelryLib.as
+                if (GetString("jewelryId") == "FertRn3") qty *= 1.4; // value: classes\classes\Items\JewelryLib.as
 
                 if (qty < 2) qty = 2;
-                if (IsRevampMod && qty > Int32.MaxValue) qty = Int32.MaxValue;
+                if (qty > Int32.MaxValue) qty = Int32.MaxValue;
 
                 return FormatVolume(qty);
             }
@@ -994,19 +977,17 @@ namespace CoCEd.ViewModel
 
                 if (GetPerk("Bro Body").IsOwned) qty *= 1.3;
                 if (GetPerk("Fertility+").IsOwned) qty *= 1.5;
-                if (IsRevampMod && GetPerk("Fertility-").IsOwned && Libido < 25) qty *= 0.7;
+                if (GetPerk("Fertility-").IsOwned && Libido < 25) qty *= 0.7;
                 if (GetPerk("Messy Orgasms").IsOwned) qty *= 1.5;
                 if (GetPerk("One Track Mind").IsOwned) qty *= 1.1;
 
                 qty *= 1 + (2 * GetPerk("Pierced: Fertite").Value1) / 100;
-                //if (IsRevampMod && jewelryEffectId == JewelryLib.MODIFIER_FERTILITY) qty *= 1 + jewelryEffectMagnitude / 100;
-                //if (GetItem(GetString("jewelryId")).EffectId == 2) qty *= 1 + GetItem(GetString("jewelryId")).EffectMagnitude / 100; // value: classes\classes\Items\JewelryLib.as
-                //if (GetString("jewelryId") == "FertRng") qty *= 1 + 20 / 100; // value: classes\classes\Items\JewelryLib.as
                 if (GetString("jewelryId") == "FertRng") qty *= 1.2; // value: classes\classes\Items\JewelryLib.as
+                if (GetString("jewelryId") == "FertRn2") qty *= 1.3; // value: classes\classes\Items\JewelryLib.as
+                if (GetString("jewelryId") == "FertRn3") qty *= 1.4; // value: classes\classes\Items\JewelryLib.as
 
-                // unsure if clamping should be done here
-                //if (qty < 2) qty = 2;
-                //if (IsRevampMod && qty > Int32.MaxValue) qty = Int32.MaxValue;
+                if (qty < 2) qty = 2;
+                if (qty > Int32.MaxValue) qty = Int32.MaxValue;
 
                 return FormatVolume(qty, "/h");
             }
@@ -1064,13 +1045,14 @@ namespace CoCEd.ViewModel
 
         public bool HasMetTamani
         {
-            get { return GetStatus("Tamani").IsOwned; }
+            get { return GetFlag(1203).AsInt() == 1; }
+            set { GetFlag(1203).SetValue(value); }
         }
 
         public int BirthedTamaniChildren
         {
-            get { return (int)GetStatus("Tamani").Value2; }
-            set { GetStatus("Tamani").Value2 = value; }
+            get { return GetFlag(1204).AsInt(); }
+            set { GetFlag(1204).SetValue(value); }
         }
 
         public int BirthedImps
@@ -1116,11 +1098,7 @@ namespace CoCEd.ViewModel
             set
             {
                 GetFlag(137).SetValue(value);
-                if (IsRevampMod)
-                {
-                    // CoC-Revamp-Mod also uses this to determine if the "Rapier Training" perk is awarded to the player
-                    GetPerk("Rapier Training").IsOwned = value >= 4;
-                }
+				GetPerk("Rapier Training").IsOwned = value >= 4;
             }
         }
 
@@ -1206,8 +1184,8 @@ namespace CoCEd.ViewModel
 
         public int ExploredForest
         {
-            get { return GetInt("exploredForest"); }
-            set { SetValue("exploredForest", value); }
+            get { return GetFlag(2298).AsInt(); }
+            set { GetFlag(2298).SetValue(value); }
         }
 
         public int ExploredDeepwoods
@@ -1223,20 +1201,20 @@ namespace CoCEd.ViewModel
 
         public int ExploredLake
         {
-            get { return GetInt("exploredLake"); }
-            set { SetValue("exploredLake", value); }
+            get { return GetFlag(2301).AsInt(); }
+            set { GetFlag(2301).SetValue(value); }
         }
 
         public int ExploredDesert
         {
-            get { return GetInt("exploredDesert"); }
-            set { SetValue("exploredDesert", value); }
+            get { return GetFlag(2299).AsInt(); }
+            set { GetFlag(2299).SetValue(value); }
         }
 
         public int ExploredMountain
         {
-            get { return GetInt("exploredMountain"); }
-            set { SetValue("exploredMountain", value); }
+            get { return GetFlag(2300).AsInt(); }
+            set { GetFlag(2300).SetValue(value); }
         }
 
         public int ExploredHighMountain
@@ -1283,15 +1261,8 @@ namespace CoCEd.ViewModel
         {
             get
             {
-                if (IsRevampMod)
-                {
-                    // CoC-Revamp-Mod uses this to track achievement progress as well, so values ≥ 2 are inevitable
-                    return GetStatus("Met Whitney").Value1 >= 2;
-                }
-                else // is vanilla CoC
-                {
-                    return GetStatus("Met Whitney").Value1 == 2;
-                }
+				if (GetFlag(464).AsInt() == 1) return false;
+				else return GetStatus("Met Whitney").Value1 >= 2;
             }
             set
             {
@@ -1334,25 +1305,11 @@ namespace CoCEd.ViewModel
         {
             get
             {
-                if (IsRevampMod)
-                {
-                    return GetFlag(2020).AsInt() == 1;
-                }
-                else // is vanilla CoC
-                {
-                    return GetStatus("Found Factory").IsOwned;
-                }
+				return GetFlag(2020).AsInt() == 1;
             }
             set
             {
-                if (IsRevampMod)
-                {
-                    GetFlag(2020).SetValue(value ? 1 : 0);
-                }
-                else // is vanilla CoC
-                {
-                    GetStatus("Found Factory").IsOwned = value;
-                }
+				GetFlag(2020).SetValue(value ? 1 : 0);
             }
         }
 
@@ -1374,41 +1331,47 @@ namespace CoCEd.ViewModel
             set { GetFlag(856).SetValue(value ? 1 : 0); }
         }
 
+        public bool UnlockedDungeonPhoenixTower
+        {
+            get
+            {
+                return
+                    GetFlag(485).AsInt() == 1 &&
+                    GetFlag(487).AsInt() == 1 &&
+                    GetFlag(492).AsInt() == 1 &&
+                    GetFlag(494).AsInt() == 1;
 
-        #region CoC-Revamp-Mod Specific
+            }
+            set {
+                GetFlag(485).SetValue(value ? 1 : 0);
+                GetFlag(487).SetValue(value ? 1 : 0);
+                GetFlag(492).SetValue(value ? 1 : 0);
+                GetFlag(494).SetValue(value ? 1 : 0);
+            }
+        }
+
+        public bool UnlockedDungeonAnzuPalace
+        {
+            get { return GetFlag(2277).AsInt() == 1; }
+            set { GetFlag(2277).SetValue(value ? 1 : 0); }
+        }
 
         public int ClawType
         {
             get { return GetInt("clawType"); }
-            set {
-                if (IsRevampMod)
-                {
-                    SetValue("clawType", value);
-                }
-            }
+            set { SetValue("clawType", value); }
         }
 
         public string ClawTone
         {
             get { return GetString("clawTone"); }
-            set {
-                if (IsRevampMod)
-                {
-                    SetValue("clawTone", value);
-                }
-            }
+            set { SetValue("clawTone", value); }
         }
 
         public int LegCount
         {
             get { return GetInt("legCount"); }
-            set
-            {
-                if (IsRevampMod)
-                {
-                    SetValue("legCount", value);
-                }
-            }
+            set { SetValue("legCount", value); }
         }
 
         // Handles biped and quadruped leg configurations.
@@ -1421,11 +1384,8 @@ namespace CoCEd.ViewModel
             }
             set
             {
-                if (IsRevampMod)
-                {
-                    if (value == LegConfigs) return;
-                    LegCount = (value + 1) * 2;
-                }
+                if (value == LegConfigs) return;
+                LegCount = (value + 1) * 2;
             }
         }
 
@@ -1433,7 +1393,6 @@ namespace CoCEd.ViewModel
         {
             get
             {
-                if (!IsRevampMod) return false;
                 switch (LowerBodyType)
                 {
                     // Types which definately have only a single allowed leg configuration.
@@ -1465,13 +1424,7 @@ namespace CoCEd.ViewModel
         public string FurColor
         {
             get { return GetString("furColor"); }
-            set
-            {
-                if (IsRevampMod)
-                {
-                    SetValue("furColor", value);
-                }
-            }
+            set { SetValue("furColor", value); }
         }
 
         public bool IsFurEnabled
@@ -1481,14 +1434,11 @@ namespace CoCEd.ViewModel
 
         public double Hunger
         {
-            get { return IsRevampMod ? GetDouble("hunger") : 0.0; }
+            get { return GetDouble("hunger"); }
             set
             {
-                if (IsRevampMod)
-                {
-                    SetValue("hunger", value);
-                    OnPropertyChanged("HungerTip");
-                }
+                SetValue("hunger", value);
+                OnPropertyChanged("HungerTip");
             }
         }
         public string HungerTip
@@ -1509,52 +1459,26 @@ namespace CoCEd.ViewModel
         public int BeardType
         {
             get { return GetInt("beardStyle"); }
-            set
-            {
-                if (IsRevampMod)
-                {
-                    SetValue("beardStyle", value);
-                }
-            }
+            set { SetValue("beardStyle", value); }
         }
 
         public double BeardLength
         {
             get { return GetDouble("beardLength"); }
-            set
-            {
-                if (IsRevampMod)
-                {
-                    SetValue("beardLength", value);
-                }
-            }
+            set { SetValue("beardLength", value); }
         }
 
         public int ExploredGlacialRift
         {
-            get { return IsRevampMod ? GetFlag(2059).AsInt() : 0; }
-            set
-            {
-                if (IsRevampMod)
-                {
-                    GetFlag(2059).SetValue(value);
-                }
-            }
+            get { return GetFlag(2059).AsInt(); }
+            set { GetFlag(2059).SetValue(value); }
         }
         
         public int ExploredVolcanicCrag
         {
-            get { return IsRevampMod ? GetFlag(2060).AsInt() : 0; }
-            set
-            {
-                if (IsRevampMod)
-                {
-                    GetFlag(2060).SetValue(value);
-                }
-            }
+            get { return GetFlag(2060).AsInt(); }
+            set { GetFlag(2060).SetValue(value); }
         }
-
-        #endregion
 
 
         string _rawDataSearchText;
@@ -1609,9 +1533,9 @@ namespace CoCEd.ViewModel
                 OnPropertyChanged();
             }
         }
-    }
+	}
 
-    public sealed class AssVM : ObjectVM
+	public sealed class AssVM : ObjectVM
     {
         public AssVM(AmfObject obj)
             : base(obj)
